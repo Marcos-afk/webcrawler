@@ -15,8 +15,9 @@ def get_html(url):
     response = requests.get(url)
     response.encoding = 'utf-8'
     soup = BeautifulSoup(response.text, "lxml")
-    html_code = soup.prettify()
-    return html_code
+    # html_code = soup.prettify()
+    # return html_code
+    return soup
 
 # Pega todos os links internos e externos do website
 def get_links(url):
@@ -37,9 +38,9 @@ def get_links(url):
         if href: # Se href não está vazia
             href = urljoin(base_url, href)
             if urlparse(href).netloc == urlparse(url).netloc:
-                links_internos.add(href)
-            else:
                 links_externos.add(href)
+            else:
+                links_internos.add(href)
 
     return links_externos, links_internos
 
@@ -63,3 +64,15 @@ def get_terms(url):
     termos_filtrados = [termo for termo in termos if termo not in connectors]
 
     return termos_filtrados
+
+# Pega a tag head do website
+def get_head(url):
+    soup = get_html(url)
+    head = soup.find('head')
+    return head.prettify()
+
+# Pega a tag body do website
+def get_body(url):
+    soup = get_html(url)
+    body = soup.find('body')
+    return body.prettify()
