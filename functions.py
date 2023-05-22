@@ -19,6 +19,24 @@ def get_html(url):
     # return html_code
     return soup
 
+# Pega a tag head do website
+def get_head(url):
+    soup = get_html(url)
+    head = soup.find('head')
+    return head.prettify()
+
+# Pega a tag body do website
+def get_body(url):
+    soup = get_html(url)
+    body = soup.find('body')
+    return body.prettify()
+
+# Pega todas as meta tags do website
+def get_meta(url):
+    soup = get_html(url)
+    meta = soup.find_all('meta')
+    return meta
+
 # Pega todos os links internos e externos do website
 def get_links(url):
     response = requests.get(url)
@@ -64,15 +82,3 @@ def get_terms(url):
     termos_filtrados = [termo for termo in termos if termo not in connectors]
 
     return termos_filtrados
-
-# Pega a tag head do website
-def get_head(url):
-    soup = get_html(url)
-    head = soup.find('head')
-    return head.prettify()
-
-# Pega a tag body do website
-def get_body(url):
-    soup = get_html(url)
-    body = soup.find('body')
-    return body.prettify()
