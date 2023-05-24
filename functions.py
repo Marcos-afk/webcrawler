@@ -6,6 +6,7 @@ import string
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from urllib.parse import urlparse, urljoin
+import wordninja
 
 # nltk.download('punkt)
 # nltk.download('stopwords')
@@ -78,7 +79,18 @@ def get_terms(url):
 
     # Transforma o texto em tokens (termos únicos), remove conectores
     termos = word_tokenize(clean_text)
-    connectors = set(stopwords.words('english'))
+    connectors = set(stopwords.words('portuguese') + stopwords.words('english'))
     termos_filtrados = [termo for termo in termos if termo not in connectors]
 
     return termos_filtrados
+
+
+def vocabulary(termos):
+    vocab = []
+
+    for i in range(len(termos)):
+        termo = termos[i].lower()
+        if termo not in vocab:
+            vocab.append(termo)
+
+    return vocab
