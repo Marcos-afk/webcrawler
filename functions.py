@@ -1,23 +1,47 @@
 from bs4 import BeautifulSoup
 import requests
+import os
 import re
 import string
-# import nltk
+import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from urllib.parse import urlparse, urljoin
-import wordninja
+import pprint
+from pymongo import MongoClient
 
-# nltk.download('punkt)
-# nltk.download('stopwords')
+nltk.download('punkt)
+nltk.download('stopwords')
+
+def connect():
+    url = "mongodb+srv://admin:admin@webcrawler.crbgm9t.mongodb.net/?retryWrites=true&w=majority"
+    client = MongoClient(url)
+    return client
+
+# Insere os dados no banco de dados MongoDB
+def insert_data(database, collection, documents):
+    client = connect()
+    db = client[database]
+    col = db[collection]
+    ids = ""
+    
+    if type(documents) == list:
+        docs = [{f"{i}": documents[i]} for i in range(len(documents))]
+        result = col.insert_many(docs)
+        ids = result.inserted_ids
+    elif type(documents) == str:
+        doc = {"string": documents}
+        result = col.insert_one(doc)
+        ids = result.inserted_id
+    client.close()
+
+    return ids
 
 # Pega o código HTML do website
-def get_html(url):
-    response = requests.get(url)
+def get_html(response):
     response.encoding = 'utf-8'
     soup = BeautifulSoup(response.text, "lxml")
-    # html_code = soup.prettify()
-    # return html_code
+    
     return soup
 
 # Pega a tag head do website
@@ -34,16 +58,22 @@ def get_body(url):
 
 # Pega todas as meta tags do website
 def get_meta(url):
+    tags = []
+
     soup = get_html(url)
     meta = soup.find_all('meta')
-    return meta
+    meta = list(meta)
+
+    for m in meta:
+        tags.append(str(m))
+
+    return tags
 
 # Pega todos os links internos e externos do website
 def get_links(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    # 
     base_url = urlparse(url).scheme + '://' + urlparse(url).netloc
 
     # Cria sets para links internos/externos
@@ -65,9 +95,7 @@ def get_links(url):
 
 # Pega todos os termos do website (excluindo tags)
 def get_terms(url):
-    response = requests.get(url)
-    response.encoding = 'utf-8'
-    soup = BeautifulSoup(response.text, "lxml")
+    soup = get_html(url)
 
     # Remove todas as tags, descapitaliza o texto, remove pontuação
     clean_text = soup.get_text()
