@@ -37,7 +37,6 @@ def insert_data(database, collection, documents):
     col = db[collection]
     ids = ""
     
-    # Diferenciação entre lista e string
     if type(documents) == list:
         docs = [{f"{i}": documents[i]} for i in range(len(documents))]
         result = col.insert_many(docs)
@@ -52,11 +51,8 @@ def insert_data(database, collection, documents):
 
 # Pega o código HTML do website
 def get_html(response):
-    # response = requests.get(url)
     response.encoding = 'utf-8'
     soup = BeautifulSoup(response.text, "lxml")
-    # html_code = soup.prettify()
-    # return html_code
     return soup
 
 # Pega a tag head do website
@@ -116,7 +112,8 @@ def get_terms(url):
     clean_text = soup.get_text(separator=' ') # 
     clean_text = re.sub(r'\s+', ' ', clean_text).strip() # Remove 2 ou mais espaços em branco seguidos
     clean_text = re.sub(r'\d', '', clean_text) # Remove todos os números
-    clean_text = re.sub(r'\W+', ' ', clean_text).strip()  # Remove todos os caracteres que não letras
+    clean_text = re.sub(r'\W+', ' ', clean_text).strip()  # Remove todos os caracteres que não são letras
+    # clean_text = clean_text.translate(str.maketrans('', '', string.punctuation))
 
     # Transforma o texto em tokens (termos únicos), remove conectores
     termos = word_tokenize(clean_text)
@@ -125,9 +122,14 @@ def get_terms(url):
 
     return termos_filtrados
 
-# Cria vocabulário dos termos
+
 def vocabulary(termos):
     lower_vocab = []
+
+    # for i in range(len(termos)):
+    #     termo = termos[i].lower()
+    #     if termo not in vocab:
+    #         vocab.append(termo)
     vocab = sorted(list(set(termos)))
 
     for wrd in vocab:
@@ -147,3 +149,14 @@ def matrix(termos, documentos):
         matriz.append(linha)
 
     return matriz
+
+# Consultar termos
+def search(consulta, documentos):
+    termosConsulta = consulta.split(' ')
+    resultados = []
+
+    for documento in documentos:
+        presente = any(termo in termosConsulta for termo in documento)
+        resultados.append(presente)
+    return resultados
+              
