@@ -32,7 +32,6 @@ for url in urls:
             # Cria dados para matriz
             for termo in vocabulario:
                 all_termos.append(termo)
-
             documentos.append(vocabulario)
 
             # Insere todos os dados no banco
@@ -47,6 +46,8 @@ for url in urls:
             insert_data(new_name, "termos", termos)
             insert_data(new_name, "vocabulario", vocabulario)
 
+            print(new_name + " done!!")
+
     # Se não houver resposta, continua com o próximo link na lista
     except requests.exceptions.RequestException:
         continue
@@ -54,3 +55,11 @@ for url in urls:
 # Cria a matriz e insere no banco
 matriz = matrix(all_termos, documentos)
 insert_matrix("Matriz", "Booleana", matriz)
+
+# Termos de consulta
+consulta = "carro bebida morte"
+resultado = search(consulta, documentos)
+
+# Imprime resultados da consulta
+print("Resultados da consulta: ")
+print(resultado)
