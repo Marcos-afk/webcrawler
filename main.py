@@ -35,16 +35,16 @@ for url in urls:
             documentos.append(vocabulario)
 
             # Insere todos os dados no banco
-            insert_data(new_name, "HTML", str(html))
-            insert_data(new_name, "Head tags", head_tag)
-            insert_data(new_name, "Body tags", body_tag)
-            insert_data(new_name, "Meta tags", meta_tags)
+            insert_data(new_name, "Código HTML", str(html))
+            insert_data(new_name, "Head tag", head_tag)
+            insert_data(new_name, "Body tag", body_tag)
+            insert_data(new_name, "Meta tag", meta_tags)
             if len(internos) > 0:
                 insert_data(new_name, "Links internos", list(internos))
             if len(externos) > 0:
                 insert_data(new_name, "Links externos", list(externos))
-            insert_data(new_name, "termos", termos)
-            insert_data(new_name, "vocabulario", vocabulario)
+            insert_data(new_name, "Termos", termos)
+            insert_data(new_name, "Vocabulário", vocabulario)
 
             print(new_name + " done!!")
 
