@@ -1,3 +1,10 @@
+# --------------------------------- #
+# Desenvolvido por: --------------- #
+# Kaleb Carvalho Santos ----------- #
+# Jônatas Mota da Silva Júnior ---- #
+# Marcos André Lima de Melo ------- #
+# ----------------------------------#
+
 from functions import *
 
 urls = []  # Lista de links
