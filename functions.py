@@ -17,7 +17,7 @@ from urllib.parse import urlparse, urljoin
 import pprint
 from pymongo import MongoClient
 
-nltk.download('punkt)
+nltk.download('punkt')
 nltk.download('stopwords')
 
 # Conecta ao banco de dados

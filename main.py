@@ -4,6 +4,7 @@
 # Jônatas Mota da Silva Júnior ---- #
 # Marcos André Lima de Melo ------- #
 # ----------------------------------#
+from django.contrib.sites import requests
 
 from functions import *
 
