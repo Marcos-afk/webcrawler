@@ -9,6 +9,9 @@ from nltk.corpus import stopwords
 from Ui_atividade import Ui_MainWindow
 import requests
 import re
+import math
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def message_box(title, message):
@@ -88,19 +91,43 @@ def search_documents():
 
 
 def search(consulta, documentos):
-    termosConsulta = consulta.split(" ")
+    termosConsulta = consulta.lower().split()
     resultados = []
 
     for documento in documentos:
-        presente = any(termo in termosConsulta for termo in documento)
+        presente = all(termo in documento.lower() for termo in termosConsulta)
         resultados.append(presente)
     return resultados
+
+
+def calculate_weights(documents, search):
+    # Cálculo dos pesos TF-IDF
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
+
+    # Cálculo do vetor TF-IDF da busca
+    busca_tfidf = tfidf_vectorizer.transform([search])
+
+    # Cálculo do grau de similaridade por cosseno
+    similaridade = cosine_similarity(busca_tfidf, tfidf_matrix)
+
+    # Ordenação dos documentos por similaridade
+    ranking_indices = similaridade.argsort()[0][
+        ::-1
+    ]  # Obtém os índices ordenados de forma decrescente
+    documentos_ordenados = [documents[i] for i in ranking_indices]
+
+    return [busca_tfidf, similaridade, documentos_ordenados]
 
 
 def search_term(term):
     documents = search_documents()
     result = search(term, documents)
-    return result
+    [busca_tfidf, similaridade, documentos_ordenados] = calculate_weights(
+        documents, term
+    )
+
+    return [result, busca_tfidf, similaridade, documentos_ordenados]
 
 
 class Tela_Principal(QMainWindow):
@@ -122,14 +149,23 @@ class Tela_Principal(QMainWindow):
 
         try:
             QApplication.processEvents()
-            result = search_term(sentence)
+            [result, busca_tfidf, similaridade, documentos_ordenados] = search_term(
+                sentence
+            )
 
             if any(result):
-                message_box("Sem resultados", "A matriz contém pelo menos um termo")
+                message_box("Sem resultados", "Contém pelo menos um termo")
             else:
                 message_box("Resultados", "A matriz não possui nenhum termo")
-        except:
-            message_box("Erro com a submissão", "Erro ao realizar busca de termos")
+
+            text = "\n".join(documentos_ordenados)
+            self.ui.textBrowser.setReadOnly(True)
+            self.ui.textBrowser.setOpenExternalLinks(True)
+            self.ui.textBrowser.setOpenLinks(False)
+            self.ui.textBrowser.setText(text)
+
+        except Exception as e:
+            message_box("Erro com a submissão", e)
         finally:
             self.ui.pushButton.setText("Submeter")
             self.ui.pushButton.setDisabled(False)

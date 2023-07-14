@@ -50,6 +50,26 @@ class Ui_MainWindow(object):
             'font: 12pt "Arial";\n' "color: rgb(255, 255, 255);\n" ""
         )
         self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setEnabled(True)
+        self.label_3.setGeometry(QtCore.QRect(0, 410, 801, 41))
+        self.label_3.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.label_3.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_3.setAutoFillBackground(False)
+        self.label_3.setStyleSheet(
+            'font: 12pt "Arial";\n' "color: rgb(255, 255, 255);\n" ""
+        )
+        self.label_3.setObjectName("label_3")
+        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
+        self.textBrowser.setEnabled(True)
+        self.textBrowser.setGeometry(QtCore.QRect(10, 480, 781, 192))
+        self.textBrowser.viewport().setProperty(
+            "cursor", QtGui.QCursor(QtCore.Qt.ForbiddenCursor)
+        )
+        self.textBrowser.setStyleSheet(
+            "background-color: rgb(245, 245, 245);\n" "color: rgb(0, 0, 0);"
+        )
+        self.textBrowser.setObjectName("textBrowser")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -66,6 +86,12 @@ class Ui_MainWindow(object):
             _translate(
                 "MainWindow",
                 '<html><head/><body><p align="center">Digite as palavras que serão submetidas a busca no input abaixo!</p></body></html>',
+            )
+        )
+        self.label_3.setText(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center">Documentos correspondentes </p></body></html>',
             )
         )
 
